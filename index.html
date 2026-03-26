@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Au fil du quotidien – Ergothérapie | Charlotte Morel</title>
+  <meta name="description" content="Charlotte Morel, ergothérapeute. Accompagnement personnalisé pour retrouver autonomie et bien-être au quotidien. Prise de rendez-vous en ligne." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="Votre texte de paragraphe.png" type="image/png" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="index.html" class="logo">
+      <img src="Votre texte de paragraphe.png" alt="Au fil du quotidien – logo" />
+    </a>
+
+    <button class="burger" onclick="toggleNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav id="nav-principale">
+      <a href="index.html" class="active">Accueil</a>
+      <a href="a-propos.html">À propos</a>
+      <a href="services.html">Prestations</a>
+      <a href="rendez-vous.html">Rendez-vous</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Retrouver l'autonomie<br>au fil du quotidien</h1>
+    <p>
+      Charlotte Morel, ergothérapeute diplômée d'État.
+      Un accompagnement humain et personnalisé pour vous aider à vivre pleinement votre quotidien.
+    </p>
+    <a href="rendez-vous.html" class="btn btn-blanc">Prendre rendez-vous</a>
+  </div>
+
+  <!-- PRÉSENTATION RAPIDE -->
+  <section id="accueil">
+    <div class="presentation">
+      <div>
+        <h2>Bienvenue</h2>
+        <hr class="separateur" />
+        <p>
+          L'ergothérapie aide chaque personne — enfant, adulte ou senior —
+          à surmonter les difficultés rencontrées dans les activités du quotidien,
+          qu'elles soient liées à une maladie, un handicap ou au vieillissement.
+        </p>
+        <br />
+        <p>
+          Mon approche est centrée sur <strong>vous</strong> : vos besoins,
+          vos habitudes de vie et vos objectifs. Ensemble, nous trouvons des
+          solutions concrètes et adaptées.
+        </p>
+        <br />
+        <a href="a-propos.html" class="btn btn-rose">En savoir plus</a>
+      </div>
+      <img src="Votre texte de paragraphe.png" alt="Logo Au fil du quotidien" />
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" style="max-width:100%; background:var(--blanc); padding:4rem 2rem;">
+    <div style="max-width:960px; margin:0 auto;">
+      <h2>Mes prestations</h2>
+      <hr class="separateur" />
+      <div class="grille-services">
+
+        <div class="carte">
+          <div class="carte-icone">🏠</div>
+          <h3>Aménagement du domicile</h3>
+          <p>Évaluation et conseils pour adapter votre logement et préserver votre sécurité et votre indépendance.</p>
+        </div>
+
+        <div class="carte">
+          <div class="carte-icone">♿</div>
+          <h3>Maintien à domicile</h3>
+          <p>Accompagnement des personnes en situation de handicap ou de perte d'autonomie dans leur quotidien.</p>
+        </div>
+
+        <div class="carte">
+          <div class="carte-icone">🧩</div>
+          <h3>Enfants & développement</h3>
+          <p>Soutien aux enfants présentant des troubles du développement, de l'apprentissage ou du comportement.</p>
+        </div>
+
+        <div class="carte">
+          <div class="carte-icone">👴</div>
+          <h3>Personnes âgées</h3>
+          <p>Prévention des chutes, stimulation cognitive et préservation des capacités fonctionnelles.</p>
+        </div>
+
+      </div>
+      <br />
+      <div style="text-align:center;">
+        <a href="services.html" class="btn btn-rose">Voir toutes les prestations</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOC RDV -->
+  <section>
+    <div class="rdv-encart">
+      <h2>Prendre rendez-vous</h2>
+      <hr class="separateur" style="background:rgba(255,255,255,0.6); margin:0.5rem auto 1.5rem;" />
+      <p>Choisissez directement un créneau disponible en ligne, sans créer de compte.</p>
+      <a href="rendez-vous.html" class="btn btn-blanc">Voir les disponibilités</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Charlotte Morel — Au fil du quotidien, Ergothérapie</p>
+    <p style="margin-top:0.4rem;">
+      <a href="contact.html">Contact</a> &nbsp;·&nbsp;
+      <a href="#">Mentions légales</a>
+    </p>
+  </footer>
+
+  <script>
+    function toggleNav() {
+      document.getElementById('nav-principale').classList.toggle('ouverte');
+    }
+  </script>
+
+</body>
+</html>

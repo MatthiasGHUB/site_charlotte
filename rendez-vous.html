@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rendez-vous – Au fil du quotidien | Charlotte Morel</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="Votre texte de paragraphe.png" type="image/png" />
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">
+      <img src="Votre texte de paragraphe.png" alt="Au fil du quotidien – logo" />
+    </a>
+    <button class="burger" onclick="toggleNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="nav-principale">
+      <a href="index.html">Accueil</a>
+      <a href="a-propos.html">À propos</a>
+      <a href="services.html">Prestations</a>
+      <a href="rendez-vous.html" class="active">Rendez-vous</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero" style="padding:3rem 2rem;">
+    <h1>Prendre rendez-vous</h1>
+    <p>Choisissez un créneau disponible directement en ligne, sans créer de compte.</p>
+  </div>
+
+  <section style="text-align:center;">
+    <h2>Réserver en ligne</h2>
+    <hr class="separateur" style="margin:0.5rem auto 2rem;" />
+
+    <p style="color:var(--texte-clair); max-width:500px; margin:0 auto 2rem;">
+      Cliquez sur le bouton ci-dessous pour accéder au calendrier de réservation
+      et choisir le créneau qui vous convient.
+    </p>
+
+    <!--
+      INSTRUCTION : remplacez "votre-nom" par votre identifiant Cal.com
+      après avoir créé votre compte sur https://cal.com
+    -->
+    <a href="https://cal.com/votre-nom" target="_blank" rel="noopener" class="btn btn-rose" style="font-size:1.1rem; padding:1rem 2.5rem;">
+      Voir les disponibilités
+    </a>
+
+    <br /><br /><br />
+
+    <div class="carte" style="max-width:560px; margin:0 auto; text-align:left;">
+      <h3 style="color:var(--rose); margin-bottom:1rem;">Informations pratiques</h3>
+      <ul style="list-style:none; display:grid; gap:0.6rem; color:var(--texte-clair);">
+        <li>📍 <strong>Au cabinet</strong> – [Adresse à compléter]</li>
+        <li>🏠 <strong>À domicile</strong> – sur demande, selon secteur géographique</li>
+        <li>⏱ <strong>Durée</strong> – 45 min à 1h selon la prestation</li>
+        <li>📞 <strong>Par téléphone</strong> – <a href="tel:+33600000000" style="color:var(--rose);">06 00 00 00 00</a></li>
+        <li>✉ <strong>Par e-mail</strong> – <a href="contact.html" style="color:var(--rose);">formulaire de contact</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Charlotte Morel — Au fil du quotidien, Ergothérapie</p>
+    <p style="margin-top:0.4rem;">
+      <a href="contact.html">Contact</a> &nbsp;·&nbsp;
+      <a href="#">Mentions légales</a>
+    </p>
+  </footer>
+
+  <script>
+    function toggleNav() {
+      document.getElementById('nav-principale').classList.toggle('ouverte');
+    }
+  </script>
+</body>
+</html>

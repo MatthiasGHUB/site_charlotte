@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>À propos – Au fil du quotidien | Charlotte Morel</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="Votre texte de paragraphe.png" type="image/png" />
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">
+      <img src="Votre texte de paragraphe.png" alt="Au fil du quotidien – logo" />
+    </a>
+    <button class="burger" onclick="toggleNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="nav-principale">
+      <a href="index.html">Accueil</a>
+      <a href="a-propos.html" class="active">À propos</a>
+      <a href="services.html">Prestations</a>
+      <a href="rendez-vous.html">Rendez-vous</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero" style="padding:3rem 2rem;">
+    <h1>À propos</h1>
+  </div>
+
+  <section>
+    <div class="presentation">
+      <div>
+        <h2>Charlotte Morel</h2>
+        <hr class="separateur" />
+        <p>
+          Ergothérapeute diplômée d'État, je me suis engagée dans cette profession
+          par conviction profonde : chaque personne mérite de vivre avec autonomie
+          et dignité, quelles que soient ses difficultés.
+        </p>
+        <br />
+        <p>
+          Après ma formation et plusieurs années d'expérience auprès de publics variés
+          (enfants, adultes, personnes âgées), j'ai créé <strong>Au fil du quotidien</strong>
+          pour proposer un suivi de proximité, à domicile ou en cabinet.
+        </p>
+        <br />
+        <p>
+          Mon approche est <strong>globale et centrée sur la personne</strong> :
+          je prends en compte votre environnement, vos habitudes, vos envies et vos contraintes
+          pour co-construire des solutions qui vous ressemblent.
+        </p>
+      </div>
+      <img src="Votre texte de paragraphe.png" alt="Logo Au fil du quotidien" />
+    </div>
+
+    <br /><br />
+
+    <h2>Valeurs</h2>
+    <hr class="separateur" />
+    <div class="grille-services">
+      <div class="carte">
+        <div class="carte-icone">🤝</div>
+        <h3>Écoute</h3>
+        <p>Chaque parcours est unique. Je prends le temps de comprendre votre situation avant toute chose.</p>
+      </div>
+      <div class="carte">
+        <div class="carte-icone">💡</div>
+        <h3>Créativité</h3>
+        <p>Il n'existe pas de solution universelle. J'adapte les outils et les méthodes à chaque personne.</p>
+      </div>
+      <div class="carte">
+        <div class="carte-icone">🌱</div>
+        <h3>Bienveillance</h3>
+        <p>Un cadre sécurisant et respectueux, pour avancer à votre rythme, sans jugement.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Charlotte Morel — Au fil du quotidien, Ergothérapie</p>
+    <p style="margin-top:0.4rem;">
+      <a href="contact.html">Contact</a> &nbsp;·&nbsp;
+      <a href="#">Mentions légales</a>
+    </p>
+  </footer>
+
+  <script>
+    function toggleNav() {
+      document.getElementById('nav-principale').classList.toggle('ouverte');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prestations – Au fil du quotidien | Charlotte Morel</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="Votre texte de paragraphe.png" type="image/png" />
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">
+      <img src="Votre texte de paragraphe.png" alt="Au fil du quotidien – logo" />
+    </a>
+    <button class="burger" onclick="toggleNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="nav-principale">
+      <a href="index.html">Accueil</a>
+      <a href="a-propos.html">À propos</a>
+      <a href="services.html" class="active">Prestations</a>
+      <a href="rendez-vous.html">Rendez-vous</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero" style="padding:3rem 2rem;">
+    <h1>Mes prestations</h1>
+    <p>Un accompagnement adapté à chaque étape de la vie.</p>
+  </div>
+
+  <section>
+    <h2>Ce que je propose</h2>
+    <hr class="separateur" />
+    <div class="grille-services">
+
+      <div class="carte">
+        <div class="carte-icone">🏠</div>
+        <h3>Aménagement du domicile</h3>
+        <p>Visite à domicile, évaluation des risques, préconisation d'aides techniques (barres d'appui, siège de bain…) et de travaux d'adaptation.</p>
+      </div>
+
+      <div class="carte">
+        <div class="carte-icone">♿</div>
+        <h3>Maintien à domicile</h3>
+        <p>Accompagnement des personnes en situation de handicap moteur, sensoriel ou cognitif pour maintenir ou développer leur autonomie.</p>
+      </div>
+
+      <div class="carte">
+        <div class="carte-icone">🧩</div>
+        <h3>Troubles du développement</h3>
+        <p>Évaluation et rééducation pour les enfants présentant TDA/H, TSA, dyspraxie, troubles des apprentissages ou difficultés sensorielles.</p>
+      </div>
+
+      <div class="carte">
+        <div class="carte-icone">👴</div>
+        <h3>Personnes âgées</h3>
+        <p>Prévention des chutes, bilan de conduite automobile, stimulation cognitive, accompagnement des aidants.</p>
+      </div>
+
+      <div class="carte">
+        <div class="carte-icone">🧠</div>
+        <h3>Rééducation neurologique</h3>
+        <p>Suivi post-AVC, sclérose en plaques, Parkinson : récupération des fonctions motrices et cognitives pour le retour à domicile.</p>
+      </div>
+
+      <div class="carte">
+        <div class="carte-icone">📋</div>
+        <h3>Bilan ergothérapique</h3>
+        <p>Évaluation complète des capacités fonctionnelles, rédaction de rapports pour dossiers MDPH, mutuelles ou établissements scolaires.</p>
+      </div>
+
+    </div>
+
+    <br /><br />
+    <div style="text-align:center;">
+      <p style="color:var(--texte-clair); margin-bottom:1rem;">Une question sur mes prestations ?</p>
+      <a href="contact.html" class="btn btn-rose" style="margin-right:1rem;">Me contacter</a>
+      <a href="rendez-vous.html" class="btn btn-rose">Prendre rendez-vous</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Charlotte Morel — Au fil du quotidien, Ergothérapie</p>
+    <p style="margin-top:0.4rem;">
+      <a href="contact.html">Contact</a> &nbsp;·&nbsp;
+      <a href="#">Mentions légales</a>
+    </p>
+  </footer>
+
+  <script>
+    function toggleNav() {
+      document.getElementById('nav-principale').classList.toggle('ouverte');
+    }
+  </script>
+</body>
+</html>

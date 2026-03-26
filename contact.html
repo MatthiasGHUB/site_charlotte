@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact – Au fil du quotidien | Charlotte Morel</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="Votre texte de paragraphe.png" type="image/png" />
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">
+      <img src="Votre texte de paragraphe.png" alt="Au fil du quotidien – logo" />
+    </a>
+    <button class="burger" onclick="toggleNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="nav-principale">
+      <a href="index.html">Accueil</a>
+      <a href="a-propos.html">À propos</a>
+      <a href="services.html">Prestations</a>
+      <a href="rendez-vous.html">Rendez-vous</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero" style="padding:3rem 2rem;">
+    <h1>Contact</h1>
+    <p>Une question ? N'hésitez pas à me contacter.</p>
+  </div>
+
+  <section>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start;">
+
+      <!-- FORMULAIRE -->
+      <div>
+        <h2>Envoyer un message</h2>
+        <hr class="separateur" />
+
+        <!--
+          INSTRUCTION : remplacez l'action Formspree par votre propre endpoint
+          Créez un compte gratuit sur https://formspree.io
+          puis remplacez "https://formspree.io/f/XXXXXXXX" par votre URL
+        -->
+        <form action="https://formspree.io/f/XXXXXXXX" method="POST">
+          <input type="text"    name="nom"     placeholder="Votre nom *"    required />
+          <input type="email"   name="email"   placeholder="Votre e-mail *" required />
+          <input type="tel"     name="telephone" placeholder="Téléphone (optionnel)" />
+          <select name="sujet">
+            <option value="" disabled selected>Sujet de votre message</option>
+            <option value="rdv">Prise de rendez-vous</option>
+            <option value="info">Renseignements sur les prestations</option>
+            <option value="tarifs">Tarifs et remboursements</option>
+            <option value="autre">Autre</option>
+          </select>
+          <textarea name="message" placeholder="Votre message *" required></textarea>
+          <input type="hidden" name="_language" value="fr" />
+          <button type="submit" class="btn btn-rose" style="justify-self:start;">Envoyer</button>
+        </form>
+      </div>
+
+      <!-- COORDONNÉES -->
+      <div>
+        <h2>Coordonnées</h2>
+        <hr class="separateur" />
+        <div class="carte" style="margin-bottom:1rem;">
+          <div class="carte-icone">📍</div>
+          <h3>Cabinet</h3>
+          <p>[Adresse à compléter]<br />[Code postal – Ville]</p>
+        </div>
+        <div class="carte" style="margin-bottom:1rem;">
+          <div class="carte-icone">📞</div>
+          <h3>Téléphone</h3>
+          <p><a href="tel:+33600000000" style="color:var(--rose);">06 00 00 00 00</a></p>
+        </div>
+        <div class="carte">
+          <div class="carte-icone">🕐</div>
+          <h3>Horaires</h3>
+          <p>Lundi – Vendredi : 9h – 18h<br />Sur rendez-vous uniquement</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Charlotte Morel — Au fil du quotidien, Ergothérapie</p>
+    <p style="margin-top:0.4rem;">
+      <a href="contact.html">Contact</a> &nbsp;·&nbsp;
+      <a href="#">Mentions légales</a>
+    </p>
+  </footer>
+
+  <script>
+    function toggleNav() {
+      document.getElementById('nav-principale').classList.toggle('ouverte');
+    }
+  </script>
+</body>
+</html>
