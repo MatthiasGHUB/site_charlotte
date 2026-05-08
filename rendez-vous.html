@@ -6,12 +6,344 @@
   <title>Rendez-vous – Au fil du quotidien | Charlotte Morel</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="Votre texte de paragraphe.png" type="image/png" />
+  <style>
+    /* ── Layout global : stepper gauche + contenu droite ── */
+    .rdv-layout {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── Stepper vertical ── */
+    .stepper {
+      display: flex;
+      flex-direction: column;
+      width: 160px;
+      flex-shrink: 0;
+      padding-top: .25rem;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      position: relative;
+      padding-bottom: 2rem;
+    }
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 17px;
+      top: 36px;
+      width: 2px;
+      height: calc(100% - 36px);
+      background: #ddd;
+      z-index: 0;
+    }
+    .step.done:not(:last-child)::after { background: var(--rose); }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #eee;
+      color: #999;
+      font-size: .85rem;
+      font-weight: bold;
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
+      transition: background .3s, color .3s;
+    }
+    .step.active .step-num { background: var(--gradient); color: #fff; }
+    .step.done   .step-num { background: var(--rose);     color: #fff; }
+    .step-label {
+      display: block;
+      font-size: .85rem;
+      color: #999;
+      padding-top: .5rem;
+      line-height: 1.3;
+    }
+    .step.active .step-label,
+    .step.done   .step-label { color: var(--rose); font-weight: bold; }
+
+    /* ── Panneau contenu ── */
+    .rdv-box {
+      flex: 1;
+      min-width: 0;
+      background: var(--blanc);
+      border-radius: 1.25rem;
+      box-shadow: 0 6px 28px var(--ombre);
+      padding: 2rem 1.75rem;
+    }
+    .etape { display: none; }
+    .etape.active { display: block; }
+    .etape-titre {
+      font-size: 1.2rem;
+      color: var(--rose);
+      font-weight: normal;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    /* ── Calendrier ── */
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .cal-header button {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--rose);
+      padding: .25rem .6rem;
+      border-radius: .5rem;
+      transition: background .2s;
+    }
+    .cal-header button:hover { background: var(--ombre); }
+    .cal-header h3 { font-weight: normal; font-size: 1.05rem; color: var(--texte); }
+
+    .cal-grille {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      text-align: center;
+    }
+    .cal-jour-label {
+      font-size: .78rem;
+      color: #999;
+      padding: .3rem 0;
+      font-weight: bold;
+    }
+    .cal-jour {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+      border: 2px solid transparent;
+      margin: 2px auto;
+    }
+    .cal-jour:hover:not(.vide):not(.ferme):not(.passe) { background: var(--ombre); }
+    .cal-jour.disponible { cursor: pointer; }
+    .cal-jour.ferme,
+    .cal-jour.passe      { color: #ccc; cursor: default; }
+    .cal-jour.vide       { cursor: default; }
+    .cal-jour.selectionne {
+      background: var(--gradient);
+      color: #fff;
+      border-color: transparent;
+    }
+    .cal-legende {
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      margin-top: 1rem;
+      font-size: .78rem;
+      color: #999;
+    }
+    .cal-legende span { display: flex; align-items: center; gap: .35rem; }
+    .puce { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .puce.rose  { background: var(--rose); }
+    .puce.grise { background: #ccc; }
+    .puce.vert  { background: #a8d8a8; }
+
+    /* ── Section créneaux (intégrée dans étape 1) ── */
+    .creneaux-section {
+      display: none;
+      margin-top: 1.75rem;
+      padding-top: 1.75rem;
+      border-top: 1.5px solid #f0f0f0;
+      animation: glisser .25s ease;
+    }
+    .creneaux-section.visible { display: block; }
+
+    @keyframes glisser {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .creneaux-titre {
+      font-size: .95rem;
+      color: var(--texte-clair);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .creneaux-titre strong { color: var(--rose); }
+
+    .creneaux-legende {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      font-size: .78rem;
+      color: #999;
+      margin-bottom: 1rem;
+    }
+    .creneaux-legende span { display: flex; align-items: center; gap: .4rem; }
+
+    .grille-creneaux {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: .6rem;
+      margin-bottom: 1.25rem;
+    }
+    .creneau {
+      padding: .6rem .4rem;
+      border-radius: .6rem;
+      text-align: center;
+      font-size: .95rem;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .creneau.libre {
+      background: #f0faf0;
+      border-color: #a8d8a8;
+      color: #2d7a2d;
+    }
+    .creneau.libre:hover { background: #d4f0d4; }
+    .creneau.libre.selectionne {
+      background: var(--gradient);
+      border-color: transparent;
+      color: #fff;
+    }
+    .creneau.pris {
+      background: #f5f5f5;
+      border-color: #ddd;
+      color: #bbb;
+      cursor: default;
+      text-decoration: line-through;
+    }
+    .creneaux-vide { text-align: center; color: #999; padding: 1.5rem; }
+
+    /* Bouton confirmer créneau */
+    .confirmer-wrap {
+      display: none;
+      justify-content: flex-end;
+      margin-top: .75rem;
+      animation: glisser .2s ease;
+    }
+    .confirmer-wrap.visible { display: flex; }
+
+    /* ── Formulaire ── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .85rem;
+    }
+    .rdv-form input,
+    .rdv-form textarea {
+      width: 100%;
+      padding: .7rem 1rem;
+      border: 1.5px solid #ddd;
+      border-radius: .6rem;
+      font-family: inherit;
+      font-size: .95rem;
+      background: var(--fond);
+      transition: border-color .2s;
+      margin-bottom: .85rem;
+    }
+    .rdv-form input:focus,
+    .rdv-form textarea:focus { outline: none; border-color: var(--rose); }
+    .rdv-form textarea { min-height: 100px; resize: vertical; margin-bottom: 0; }
+    .rdv-form label { font-size: .85rem; color: var(--texte-clair); display: block; margin-bottom: .25rem; }
+
+    .recap-mini {
+      background: var(--fond);
+      border-radius: .75rem;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-size: .9rem;
+      color: var(--texte-clair);
+    }
+    .recap-mini strong { color: var(--rose); }
+
+    /* ── Confirmation ── */
+    .confirmation { text-align: center; padding: 1rem 0; }
+    .check-cercle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1.5rem;
+      color: #fff;
+    }
+    .confirmation h2 { color: var(--rose); font-weight: normal; margin-bottom: .75rem; }
+    .confirmation p  { color: var(--texte-clair); }
+
+    /* ── Boutons navigation ── */
+    .btns-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.75rem;
+      gap: 1rem;
+    }
+    .btn-retour {
+      background: none;
+      border: 1.5px solid #ddd;
+      border-radius: 99px;
+      padding: .7rem 1.5rem;
+      cursor: pointer;
+      color: var(--texte-clair);
+      font-family: inherit;
+      font-size: .95rem;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-retour:hover { border-color: var(--rose); color: var(--rose); }
+    .chargement { text-align: center; color: #999; padding: 1.5rem; }
+
+    @media (max-width: 640px) {
+      /* Stepper passe en haut, horizontal compact */
+      .rdv-layout { flex-direction: column; gap: 1rem; }
+      .stepper {
+        flex-direction: row;
+        width: 100%;
+        justify-content: center;
+        padding-top: 0;
+      }
+      .step {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-bottom: 0;
+        flex: 1;
+        gap: .3rem;
+      }
+      .step:not(:last-child)::after {
+        top: 17px;
+        left: 50%;
+        width: calc(100% );
+        height: 2px;
+      }
+      .step-label { padding-top: 0; font-size: .72rem; }
+      .rdv-box { padding: 1.25rem 1rem; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
   <header>
     <a href="index.html" class="logo">
       <img src="Votre texte de paragraphe.png" alt="Au fil du quotidien – logo" />
+      <div class="logo-texte">
+        <strong>Au fil du quotidien</strong>
+        <span>Ergothérapie · Charlotte Morel</span>
+      </div>
     </a>
     <button class="burger" onclick="toggleNav()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -25,54 +357,354 @@
     </nav>
   </header>
 
-  <div class="hero" style="padding:3rem 2rem;">
-    <h1>Prendre rendez-vous</h1>
-    <p>Choisissez un créneau disponible directement en ligne, sans créer de compte.</p>
-  </div>
+  <section style="padding-top:2rem; padding-bottom:3rem;">
+    <h1 class="page-titre" style="text-align:center;">Prendre rendez-vous</h1>
+    <p style="text-align:center; color:var(--texte-clair); margin-bottom:2rem;">Choisissez une date et un créneau disponible, sans créer de compte.</p>
 
-  <section style="text-align:center;">
-    <h2>Réserver en ligne</h2>
-    <hr class="separateur" style="margin:0.5rem auto 2rem;" />
+    <div class="rdv-layout">
 
-    <p style="color:var(--texte-clair); max-width:500px; margin:0 auto 2rem;">
-      Cliquez sur le bouton ci-dessous pour accéder au calendrier de réservation
-      et choisir le créneau qui vous convient.
-    </p>
-
-    <!--
-      INSTRUCTION : remplacez "votre-nom" par votre identifiant Cal.com
-      après avoir créé votre compte sur https://cal.com
-    -->
-    <a href="https://cal.com/votre-nom" target="_blank" rel="noopener" class="btn btn-rose" style="font-size:1.1rem; padding:1rem 2.5rem;">
-      Voir les disponibilités
-    </a>
-
-    <br /><br /><br />
-
-    <div class="carte" style="max-width:560px; margin:0 auto; text-align:left;">
-      <h3 style="color:var(--rose); margin-bottom:1rem;">Informations pratiques</h3>
-      <ul style="list-style:none; display:grid; gap:0.6rem; color:var(--texte-clair);">
-        <li>📍 <strong>Au cabinet</strong> – [Adresse à compléter]</li>
-        <li>🏠 <strong>À domicile</strong> – sur demande, selon secteur géographique</li>
-        <li>⏱ <strong>Durée</strong> – 45 min à 1h selon la prestation</li>
-        <li>📞 <strong>Par téléphone</strong> – <a href="tel:+33600000000" style="color:var(--rose);">06 00 00 00 00</a></li>
-        <li>✉ <strong>Par e-mail</strong> – <a href="contact.html" style="color:var(--rose);">formulaire de contact</a></li>
-      </ul>
+    <!-- Stepper vertical gauche -->
+    <div class="stepper">
+      <div class="step active" id="step-1">
+        <span class="step-num">1</span>
+        <span class="step-label">Date &amp; créneau</span>
+      </div>
+      <div class="step" id="step-2">
+        <span class="step-num">2</span>
+        <span class="step-label">Vos infos</span>
+      </div>
+      <div class="step" id="step-3">
+        <span class="step-num">3</span>
+        <span class="step-label">Confirmation</span>
+      </div>
     </div>
+
+    <div class="rdv-box">
+
+      <!-- ÉTAPE 1 : Calendrier + créneaux -->
+      <div class="etape active" id="etape-1">
+        <p class="etape-titre">Choisissez une date et un créneau</p>
+
+        <!-- Calendrier -->
+        <div class="cal-header">
+          <button onclick="moisPrecedent()" title="Mois précédent">&#8249;</button>
+          <h3 id="cal-titre"></h3>
+          <button onclick="moisSuivant()" title="Mois suivant">&#8250;</button>
+        </div>
+        <div class="cal-grille" id="cal-grille"></div>
+        <div class="cal-legende">
+          <span><span class="puce rose"></span> Disponible</span>
+          <span><span class="puce grise"></span> Indisponible</span>
+        </div>
+
+        <!-- Créneaux (apparaît après sélection d'une date) -->
+        <div class="creneaux-section" id="creneaux-section">
+          <p class="creneaux-titre">Créneaux disponibles le <strong id="creneaux-date-label"></strong></p>
+          <div class="creneaux-legende">
+            <span><span class="puce vert"></span> Disponible</span>
+            <span><span class="puce grise"></span> Réservé</span>
+          </div>
+          <div class="grille-creneaux" id="grille-creneaux">
+            <p class="chargement">Chargement…</p>
+          </div>
+          <!-- Bouton confirmer (apparaît après sélection d'un créneau) -->
+          <div class="confirmer-wrap" id="confirmer-wrap">
+            <button class="btn btn-rose" onclick="confirmerCreneau()">Continuer →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2 : Formulaire -->
+      <div class="etape" id="etape-2">
+        <p class="etape-titre">Vos informations</p>
+        <form class="rdv-form" onsubmit="soumettreRdv(event)">
+          <div class="form-row">
+            <div>
+              <label for="prenom">Prénom *</label>
+              <input type="text" id="prenom" name="prenom" required autocomplete="given-name" />
+            </div>
+            <div>
+              <label for="nom">Nom *</label>
+              <input type="text" id="nom" name="nom" required autocomplete="family-name" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label for="telephone">Téléphone</label>
+              <input type="tel" id="telephone" name="telephone" autocomplete="tel" />
+            </div>
+            <div>
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" required autocomplete="email" />
+            </div>
+          </div>
+          <label for="description">Motif du rendez-vous (optionnel)</label>
+          <textarea id="description" name="description" placeholder="Décrivez brièvement la raison de votre rendez-vous…"></textarea>
+          <div class="btns-nav">
+            <button type="button" class="btn-retour" onclick="allerEtape(1)">← Retour</button>
+            <button type="submit" class="btn btn-rose" id="btn-soumettre">Confirmer le rendez-vous</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ÉTAPE 3 : Confirmation -->
+      <div class="etape" id="etape-3">
+        <div class="confirmation">
+          <div class="check-cercle">✓</div>
+          <h2>Rendez-vous confirmé !</h2>
+          <p>Votre rendez-vous a bien été enregistré.<br />Un email de confirmation vous a été envoyé.</p>
+          <br />
+          <div class="recap-mini" style="max-width:320px; margin:0 auto 1.5rem;">
+            📅 <strong id="recap-date-fin"></strong><br />
+            🕐 <strong id="recap-heure-fin"></strong>
+          </div>
+          <a href="index.html" class="btn btn-rose">Retour à l'accueil</a>
+        </div>
+      </div>
+
+    </div><!-- fin rdv-box -->
+    </div><!-- fin rdv-layout -->
   </section>
 
   <footer>
     <p>© 2026 Charlotte Morel — Au fil du quotidien, Ergothérapie</p>
-    <p style="margin-top:0.4rem;">
+    <p style="margin-top:.4rem;">
       <a href="contact.html">Contact</a> &nbsp;·&nbsp;
       <a href="#">Mentions légales</a>
     </p>
   </footer>
 
   <script>
+    // ── État global ──────────────────────────────────────────────────────────
+    const etat = {
+      annee:             new Date().getFullYear(),
+      mois:              new Date().getMonth() + 1,
+      dateSelectionnee:  null,
+      heureSelectionnee: null,
+      joursDisponibles:  {}
+    };
+
+    const JOURS_LABELS = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+    const MOIS_LABELS  = ['Janvier','Février','Mars','Avril','Mai','Juin',
+                          'Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+    // ── Navigation header ────────────────────────────────────────────────────
     function toggleNav() {
       document.getElementById('nav-principale').classList.toggle('ouverte');
     }
+
+    // ── Stepper ──────────────────────────────────────────────────────────────
+    function allerEtape(n) {
+      document.querySelectorAll('.etape').forEach((el, i) => {
+        el.classList.toggle('active', i + 1 === n);
+      });
+      document.querySelectorAll('.step').forEach((el, i) => {
+        el.classList.remove('active', 'done');
+        if (i + 1 < n)  el.classList.add('done');
+        if (i + 1 === n) el.classList.add('active');
+      });
+    }
+
+    // ── Calendrier ───────────────────────────────────────────────────────────
+    async function chargerJoursDisponibles() {
+      const { annee, mois } = etat;
+      const res  = await fetch(`/api/jours-disponibles?annee=${annee}&mois=${mois}`);
+      const data = await res.json();
+      etat.joursDisponibles = {};
+      data.jours.forEach(j => { etat.joursDisponibles[j.date] = j.disponible; });
+      rendreCalendrier();
+    }
+
+    function rendreCalendrier() {
+      const { annee, mois } = etat;
+      document.getElementById('cal-titre').textContent = `${MOIS_LABELS[mois-1]} ${annee}`;
+
+      const grille = document.getElementById('cal-grille');
+      grille.innerHTML = '';
+
+      JOURS_LABELS.forEach(j => {
+        const d = document.createElement('div');
+        d.className   = 'cal-jour-label';
+        d.textContent = j;
+        grille.appendChild(d);
+      });
+
+      const premierJour = new Date(annee, mois - 1, 1).getDay();
+      const decalage    = (premierJour + 6) % 7;
+      const nbJours     = new Date(annee, mois, 0).getDate();
+
+      for (let i = 0; i < decalage; i++) {
+        const v = document.createElement('div');
+        v.className = 'cal-jour vide';
+        grille.appendChild(v);
+      }
+
+      for (let d = 1; d <= nbJours; d++) {
+        const dateStr    = `${annee}-${String(mois).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const disponible = etat.joursDisponibles[dateStr];
+        const el         = document.createElement('div');
+        el.textContent   = d;
+        el.className     = 'cal-jour';
+
+        if (disponible === false) {
+          el.classList.add(dateStr < new Date().toISOString().slice(0,10) ? 'passe' : 'ferme');
+        } else if (disponible === true) {
+          el.classList.add('disponible');
+          if (dateStr === etat.dateSelectionnee) el.classList.add('selectionne');
+          el.onclick = () => selectionnerDate(dateStr);
+        } else {
+          el.classList.add('ferme');
+        }
+        grille.appendChild(el);
+      }
+    }
+
+    async function selectionnerDate(dateStr) {
+      etat.dateSelectionnee  = dateStr;
+      etat.heureSelectionnee = null;
+      rendreCalendrier();
+
+      // Afficher la section créneaux
+      const section = document.getElementById('creneaux-section');
+      section.classList.remove('visible');
+      // Forcer le reflow pour relancer l'animation
+      void section.offsetWidth;
+      section.classList.add('visible');
+
+      document.getElementById('creneaux-date-label').textContent = formaterDate(dateStr);
+      document.getElementById('confirmer-wrap').classList.remove('visible');
+
+      // Charger les créneaux
+      const grille = document.getElementById('grille-creneaux');
+      grille.innerHTML = '<p class="chargement">Chargement…</p>';
+
+      const res  = await fetch(`/api/disponibilites?date=${dateStr}`);
+      const data = await res.json();
+
+      if (!data.slots || data.slots.length === 0) {
+        grille.innerHTML = '<p class="creneaux-vide">Aucun créneau disponible ce jour.</p>';
+        return;
+      }
+
+      grille.innerHTML = '';
+      data.slots.forEach(slot => {
+        const el       = document.createElement('div');
+        el.className   = `creneau ${slot.disponible ? 'libre' : 'pris'}`;
+        el.textContent = slot.heure;
+        if (slot.disponible) {
+          el.onclick = () => selectionnerCreneau(slot.heure);
+        }
+        grille.appendChild(el);
+      });
+
+      // Scroll doux vers les créneaux
+      section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function moisPrecedent() {
+      if (etat.mois === 1) { etat.mois = 12; etat.annee--; }
+      else etat.mois--;
+      chargerJoursDisponibles();
+    }
+
+    function moisSuivant() {
+      if (etat.mois === 12) { etat.mois = 1; etat.annee++; }
+      else etat.mois++;
+      chargerJoursDisponibles();
+    }
+
+    // ── Créneaux ─────────────────────────────────────────────────────────────
+    function selectionnerCreneau(heure) {
+      etat.heureSelectionnee = heure;
+      document.querySelectorAll('.creneau.libre').forEach(el => {
+        el.classList.toggle('selectionne', el.textContent === heure);
+      });
+      // Afficher le bouton Confirmer
+      document.getElementById('confirmer-wrap').classList.add('visible');
+    }
+
+    function confirmerCreneau() {
+      // Calcul "de 17h à 18h"
+      const [h] = etat.heureSelectionnee.split(':').map(Number);
+      const heureDebut = `${h}h`;
+      const heureFin   = `${h + 1}h`;
+
+      // Label compact pour le stepper : "Jeudi 26 mars de 17h à 18h"
+      const labelCourt = formaterDateCourte(etat.dateSelectionnee);
+      document.querySelector('#step-1 .step-label').textContent =
+        `${labelCourt} de ${heureDebut} à ${heureFin}`;
+
+      // Recap page de confirmation finale
+      const lisible = formaterDate(etat.dateSelectionnee);
+      document.getElementById('recap-date-fin').textContent  = lisible;
+      document.getElementById('recap-heure-fin').textContent = etat.heureSelectionnee;
+
+      allerEtape(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── Soumission ───────────────────────────────────────────────────────────
+    async function soumettreRdv(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-soumettre');
+      btn.disabled    = true;
+      btn.textContent = 'Envoi en cours…';
+
+      const body = {
+        date:        etat.dateSelectionnee,
+        heure:       etat.heureSelectionnee,
+        nom:         document.getElementById('nom').value.trim(),
+        prenom:      document.getElementById('prenom').value.trim(),
+        telephone:   document.getElementById('telephone').value.trim(),
+        email:       document.getElementById('email').value.trim(),
+        description: document.getElementById('description').value.trim()
+      };
+
+      try {
+        const res  = await fetch('/api/rendez-vous', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(body)
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert(data.error || 'Une erreur est survenue.');
+          btn.disabled    = false;
+          btn.textContent = 'Confirmer le rendez-vous';
+          return;
+        }
+
+        allerEtape(3);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        alert('Erreur réseau. Veuillez réessayer.');
+        btn.disabled    = false;
+        btn.textContent = 'Confirmer le rendez-vous';
+      }
+    }
+
+    // ── Utilitaire ───────────────────────────────────────────────────────────
+    function formaterDate(dateStr) {
+      const jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+      const mois  = ['janvier','février','mars','avril','mai','juin',
+                     'juillet','août','septembre','octobre','novembre','décembre'];
+      const d = new Date(`${dateStr}T12:00:00`);
+      return `${jours[d.getDay()]} ${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    // Format court pour le stepper : "Jeudi 26 mars"
+    function formaterDateCourte(dateStr) {
+      const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+      const mois  = ['janvier','février','mars','avril','mai','juin',
+                     'juillet','août','septembre','octobre','novembre','décembre'];
+      const d = new Date(`${dateStr}T12:00:00`);
+      return `${jours[d.getDay()]} ${d.getDate()} ${mois[d.getMonth()]}`;
+    }
+
+    // ── Init ─────────────────────────────────────────────────────────────────
+    chargerJoursDisponibles();
   </script>
+
 </body>
 </html>

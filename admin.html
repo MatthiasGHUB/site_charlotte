@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administration – Au fil du quotidien</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="Votre texte de paragraphe.png" type="image/png" />
+  <style>
+    body { font-family: Georgia, serif; }
+
+    /* ── Login ── */
+    .login-overlay {
+      position: fixed; inset: 0;
+      background: var(--fond);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .login-box {
+      background: var(--blanc);
+      border-radius: 1.25rem;
+      box-shadow: 0 6px 28px var(--ombre);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+    .login-box img  { height: 70px; margin-bottom: 1rem; }
+    .login-box h2   { color: var(--rose); font-weight: normal; margin-bottom: 1.5rem; }
+    .login-box input {
+      width: 100%;
+      padding: .75rem 1rem;
+      border: 1.5px solid #ddd;
+      border-radius: .6rem;
+      font-family: inherit;
+      font-size: .97rem;
+      margin-bottom: 1rem;
+    }
+    .login-box input:focus { outline: none; border-color: var(--rose); }
+    .login-erreur { color: #c0392b; font-size: .88rem; margin-bottom: .75rem; display: none; }
+
+    /* ── Layout admin ── */
+    .admin-wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .admin-header h1 { color: var(--rose); font-weight: normal; font-size: 1.5rem; }
+
+    /* ── Onglets ── */
+    .onglets {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 0;
+    }
+    .onglet {
+      background: none;
+      border: none;
+      padding: .6rem 1.2rem;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .95rem;
+      color: var(--texte-clair);
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: color .2s, border-color .2s;
+    }
+    .onglet.actif { color: var(--rose); border-bottom-color: var(--rose); }
+
+    /* ── Tableau RDV ── */
+    .table-rdv {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+    }
+    .table-rdv th {
+      text-align: left;
+      padding: .75rem 1rem;
+      background: var(--fond);
+      color: var(--rose);
+      font-weight: bold;
+      border-bottom: 2px solid #eee;
+    }
+    .table-rdv td {
+      padding: .75rem 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: top;
+    }
+    .table-rdv tr:hover td { background: #fff8fc; }
+    .badge-date {
+      display: inline-block;
+      background: var(--gradient);
+      color: #fff;
+      border-radius: 99px;
+      padding: .2rem .7rem;
+      font-size: .8rem;
+      white-space: nowrap;
+    }
+    .btn-suppr {
+      background: none;
+      border: 1.5px solid #ddd;
+      border-radius: 99px;
+      padding: .3rem .8rem;
+      cursor: pointer;
+      font-size: .8rem;
+      color: #999;
+      transition: .2s;
+    }
+    .btn-suppr:hover { border-color: #c0392b; color: #c0392b; }
+    .rdv-vide { text-align: center; padding: 3rem; color: #bbb; }
+
+    /* ── Filtres ── */
+    .filtres {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filtres input[type="date"],
+    .filtres select {
+      padding: .5rem .9rem;
+      border: 1.5px solid #ddd;
+      border-radius: .6rem;
+      font-family: inherit;
+      font-size: .9rem;
+    }
+    .filtres input[type="date"]:focus,
+    .filtres select:focus { outline: none; border-color: var(--rose); }
+    .compteur { font-size: .88rem; color: #999; }
+
+    /* ── Config ── */
+    .config-section h3 { color: var(--rose); font-weight: normal; margin-bottom: 1rem; font-size: 1.1rem; }
+    .jours-grille {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .jour-check { display: none; }
+    .jour-label {
+      padding: .5rem 1rem;
+      border: 1.5px solid #ddd;
+      border-radius: 99px;
+      cursor: pointer;
+      font-size: .9rem;
+      transition: .2s;
+      user-select: none;
+    }
+    .jour-check:checked + .jour-label {
+      background: var(--gradient);
+      border-color: transparent;
+      color: #fff;
+    }
+    .horaires-row {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .horaires-row label { font-size: .88rem; color: var(--texte-clair); display: block; margin-bottom: .3rem; }
+    .horaires-row input[type="time"] {
+      padding: .55rem .9rem;
+      border: 1.5px solid #ddd;
+      border-radius: .6rem;
+      font-family: inherit;
+      font-size: .95rem;
+    }
+    .horaires-row input[type="time"]:focus { outline: none; border-color: var(--rose); }
+    .info-creneaux { font-size: .85rem; color: #999; margin-top: -.75rem; margin-bottom: 1.25rem; }
+
+    .notif {
+      display: none;
+      padding: .75rem 1rem;
+      border-radius: .6rem;
+      margin-bottom: 1rem;
+      font-size: .9rem;
+    }
+    .notif.ok  { background: #eafaf1; color: #1e8449; display: block; }
+    .notif.err { background: #fdecea; color: #c0392b; display: block; }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      .admin-wrap { padding: 1.25rem 1rem 3rem; }
+
+      .login-box { margin: 1rem; }
+
+      /* Filtres en colonne */
+      .filtres { flex-direction: column; align-items: stretch; }
+      .filtres input[type="date"],
+      .filtres select,
+      .filtres button { width: 100%; }
+
+      /* Tableau : affichage carte sur mobile */
+      .table-rdv thead { display: none; }
+      .table-rdv tr {
+        display: block;
+        border: 1px solid #eee;
+        border-radius: .75rem;
+        margin-bottom: 1rem;
+        padding: .75rem 1rem;
+        background: var(--fond);
+      }
+      .table-rdv td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: .35rem 0;
+        border: none;
+        font-size: .88rem;
+        gap: .5rem;
+      }
+      .table-rdv td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: var(--rose);
+        white-space: nowrap;
+        min-width: 80px;
+      }
+      .table-rdv tr:hover td { background: transparent; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── LOGIN ────────────────────────────────────────────────────────────── -->
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-box">
+      <img src="Votre texte de paragraphe.png" alt="Logo" />
+      <h2>Espace administration</h2>
+      <p class="login-erreur" id="login-erreur">Mot de passe incorrect.</p>
+      <input type="password" id="mdp-input" placeholder="Mot de passe" onkeydown="if(event.key==='Enter') seConnecter()" />
+      <button class="btn btn-rose" style="width:100%;" onclick="seConnecter()">Se connecter</button>
+    </div>
+  </div>
+
+  <!-- ── HEADER ─────────────────────────────────────────────────────────── -->
+  <header>
+    <a href="index.html" class="logo">
+      <img src="Votre texte de paragraphe.png" alt="Au fil du quotidien – logo" />
+    </a>
+    <nav>
+      <a href="index.html">← Site public</a>
+    </nav>
+  </header>
+
+  <!-- ── CONTENU ADMIN ──────────────────────────────────────────────────── -->
+  <div class="admin-wrap" id="admin-wrap" style="display:none;">
+
+    <div class="admin-header">
+      <h1>Administration</h1>
+      <button class="btn-retour" onclick="seDeconnecter()">Se déconnecter</button>
+    </div>
+
+    <!-- Onglets -->
+    <div class="onglets">
+      <button class="onglet actif" onclick="ouvrirOnglet('rdv', this)">📅 Rendez-vous</button>
+      <button class="onglet"       onclick="ouvrirOnglet('config', this)">⚙️ Configuration</button>
+    </div>
+
+    <!-- ── ONGLET RDV ── -->
+    <div id="tab-rdv">
+      <div class="filtres">
+        <input type="date" id="filtre-date" onchange="filtrer()" title="Filtrer par date" />
+        <select id="filtre-ordre" onchange="filtrer()">
+          <option value="asc">Plus anciens en premier</option>
+          <option value="desc">Plus récents en premier</option>
+        </select>
+        <button class="btn-retour" onclick="reinitialiserFiltres()">Réinitialiser</button>
+        <span class="compteur" id="compteur"></span>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="table-rdv" id="table-rdv">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Heure</th>
+              <th>Patient</th>
+              <th>Contact</th>
+              <th>Motif</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-rdv">
+            <tr><td colspan="6" class="rdv-vide">Chargement…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── ONGLET CONFIG ── -->
+    <div id="tab-config" style="display:none;">
+      <div class="config-section">
+        <div class="notif" id="notif-config"></div>
+
+        <h3>Jours d'ouverture</h3>
+        <div class="jours-grille">
+          <input type="checkbox" class="jour-check" id="j-1" value="1" /><label class="jour-label" for="j-1">Lundi</label>
+          <input type="checkbox" class="jour-check" id="j-2" value="2" /><label class="jour-label" for="j-2">Mardi</label>
+          <input type="checkbox" class="jour-check" id="j-3" value="3" /><label class="jour-label" for="j-3">Mercredi</label>
+          <input type="checkbox" class="jour-check" id="j-4" value="4" /><label class="jour-label" for="j-4">Jeudi</label>
+          <input type="checkbox" class="jour-check" id="j-5" value="5" /><label class="jour-label" for="j-5">Vendredi</label>
+          <input type="checkbox" class="jour-check" id="j-6" value="6" /><label class="jour-label" for="j-6">Samedi</label>
+          <input type="checkbox" class="jour-check" id="j-0" value="0" /><label class="jour-label" for="j-0">Dimanche</label>
+        </div>
+
+        <h3>Horaires</h3>
+        <div class="horaires-row">
+          <div>
+            <label for="heure-debut">Début</label>
+            <input type="time" id="heure-debut" step="3600" />
+          </div>
+          <div>
+            <label for="heure-fin">Fin</label>
+            <input type="time" id="heure-fin" step="3600" />
+          </div>
+        </div>
+        <p class="info-creneaux">Les créneaux sont d'une heure. Ex : 9h→18h = créneaux 09:00, 10:00 … 17:00</p>
+
+        <button class="btn btn-rose" onclick="sauvegarderConfig()">Enregistrer la configuration</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ── Auth ─────────────────────────────────────────────────────────────────
+    let mdpCourant = '';
+    let tousRdv    = [];
+
+    function authHeader() {
+      return 'Basic ' + btoa('admin:' + mdpCourant);
+    }
+
+    async function seConnecter() {
+      const mdp = document.getElementById('mdp-input').value;
+      if (!mdp) return;
+
+      const res = await fetch('/api/admin/config', {
+        headers: { 'Authorization': 'Basic ' + btoa('admin:' + mdp) }
+      });
+
+      if (res.ok) {
+        mdpCourant = mdp;
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('admin-wrap').style.display    = 'block';
+        chargerRdv();
+        chargerConfig(await res.json());
+      } else {
+        document.getElementById('login-erreur').style.display = 'block';
+      }
+    }
+
+    function seDeconnecter() {
+      mdpCourant = '';
+      document.getElementById('login-overlay').style.display = 'flex';
+      document.getElementById('admin-wrap').style.display    = 'none';
+      document.getElementById('mdp-input').value = '';
+      document.getElementById('login-erreur').style.display  = 'none';
+    }
+
+    // ── Onglets ──────────────────────────────────────────────────────────────
+    function ouvrirOnglet(id, btn) {
+      document.getElementById('tab-rdv').style.display    = id === 'rdv'     ? '' : 'none';
+      document.getElementById('tab-config').style.display = id === 'config'  ? '' : 'none';
+      document.querySelectorAll('.onglet').forEach(o => o.classList.remove('actif'));
+      btn.classList.add('actif');
+    }
+
+    // ── Rendez-vous ───────────────────────────────────────────────────────────
+    async function chargerRdv() {
+      const res  = await fetch('/api/admin/rendez-vous', { headers: { Authorization: authHeader() } });
+      tousRdv    = await res.json();
+      filtrer();
+    }
+
+    function filtrer() {
+      const dateFiltre = document.getElementById('filtre-date').value;
+      const ordre      = document.getElementById('filtre-ordre').value;
+
+      let liste = [...tousRdv];
+      if (dateFiltre) liste = liste.filter(r => r.date === dateFiltre);
+      if (ordre === 'asc') {
+        liste.sort((a, b) => a.date.localeCompare(b.date) || a.heure.localeCompare(b.heure));
+      } else {
+        liste.sort((a, b) => b.date.localeCompare(a.date) || a.heure.localeCompare(b.heure));
+      }
+
+      rendreListe(liste);
+    }
+
+    function reinitialiserFiltres() {
+      document.getElementById('filtre-date').value = '';
+      document.getElementById('filtre-ordre').value = 'desc';
+      filtrer();
+    }
+
+    function rendreListe(liste) {
+      const tbody = document.getElementById('tbody-rdv');
+      document.getElementById('compteur').textContent = `${liste.length} rendez-vous`;
+
+      if (liste.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="rdv-vide">Aucun rendez-vous trouvé.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = liste.map(r => `
+        <tr>
+          <td data-label="Date"><span class="badge-date">${formaterDate(r.date)}</span></td>
+          <td data-label="Heure"><strong>${r.heure}</strong></td>
+          <td data-label="Patient">${echapper(r.prenom)} ${echapper(r.nom)}</td>
+          <td data-label="Contact">
+            <a href="mailto:${echapper(r.email)}" style="color:var(--rose);">${echapper(r.email)}</a><br/>
+            ${r.telephone ? `<a href="tel:${echapper(r.telephone)}" style="color:var(--texte-clair);font-size:.85rem;">${echapper(r.telephone)}</a>` : ''}
+          </td>
+          <td data-label="Motif" style="color:var(--texte-clair);font-size:.88rem;">${echapper(r.description || '—')}</td>
+          <td data-label="">
+            <button class="btn-suppr" onclick="supprimerRdv(${r.id}, '${echapper(r.prenom)} ${echapper(r.nom)}')">
+              Supprimer
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function supprimerRdv(id, nom) {
+      if (!confirm(`Supprimer le rendez-vous de ${nom} ?`)) return;
+      await fetch(`/api/admin/rendez-vous/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: authHeader() }
+      });
+      tousRdv = tousRdv.filter(r => r.id !== id);
+      filtrer();
+    }
+
+    // ── Configuration ─────────────────────────────────────────────────────────
+    function chargerConfig(config) {
+      const jours = config.jours_ouverts.split(',').map(Number);
+      document.querySelectorAll('.jour-check').forEach(cb => {
+        cb.checked = jours.includes(parseInt(cb.value));
+      });
+      document.getElementById('heure-debut').value = config.heure_debut;
+      document.getElementById('heure-fin').value   = config.heure_fin;
+    }
+
+    async function sauvegarderConfig() {
+      const jours = [...document.querySelectorAll('.jour-check:checked')]
+        .map(cb => cb.value).join(',');
+      const debut = document.getElementById('heure-debut').value;
+      const fin   = document.getElementById('heure-fin').value;
+
+      if (!jours) { afficherNotif('Sélectionnez au moins un jour.', 'err'); return; }
+      if (!debut || !fin || debut >= fin) { afficherNotif('Horaires invalides.', 'err'); return; }
+
+      const res = await fetch('/api/admin/config', {
+        method:  'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: authHeader() },
+        body:    JSON.stringify({ jours_ouverts: jours, heure_debut: debut, heure_fin: fin })
+      });
+
+      if (res.ok) afficherNotif('Configuration enregistrée !', 'ok');
+      else        afficherNotif('Erreur lors de l\'enregistrement.', 'err');
+    }
+
+    function afficherNotif(msg, type) {
+      const n = document.getElementById('notif-config');
+      n.textContent = msg;
+      n.className   = `notif ${type}`;
+      setTimeout(() => { n.className = 'notif'; }, 3000);
+    }
+
+    // ── Utilitaires ───────────────────────────────────────────────────────────
+    function formaterDate(dateStr) {
+      const [y, m, d] = dateStr.split('-');
+      return `${d}/${m}/${y}`;
+    }
+
+    function echapper(str) {
+      return String(str || '')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+
+</body>
+</html>

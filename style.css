@@ -28,8 +28,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--blanc);
-  box-shadow: 0 2px 12px var(--ombre);
+  background: var(--gradient);
   padding: 0.75rem 2rem;
   display: flex;
   align-items: center;
@@ -45,9 +44,34 @@ header {
 }
 
 .logo img {
-  height: 64px;
-  width: 64px;
+  height: 52px;
+  width: 52px;
   object-fit: contain;
+  background: white;
+  border-radius: 50%;
+  padding: 3px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  flex-shrink: 0;
+}
+
+.logo-texte {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.logo-texte strong {
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.logo-texte span {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.75rem;
+  font-style: italic;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.12);
 }
 
 nav {
@@ -58,7 +82,7 @@ nav {
 
 nav a {
   text-decoration: none;
-  color: var(--texte-clair);
+  color: rgba(255,255,255,0.9);
   font-size: 0.95rem;
   padding: 0.4rem 0.9rem;
   border-radius: 99px;
@@ -67,7 +91,7 @@ nav a {
 
 nav a:hover,
 nav a.active {
-  background: var(--gradient);
+  background: rgba(255,255,255,0.25);
   color: var(--blanc);
 }
 
@@ -85,31 +109,37 @@ nav a.active {
   display: block;
   width: 24px;
   height: 2px;
-  background: var(--rose);
+  background: white;
   border-radius: 2px;
   transition: 0.3s;
 }
 
-/* ===== HERO ===== */
-.hero {
-  background: var(--gradient);
-  color: var(--blanc);
-  padding: 5rem 2rem;
-  text-align: center;
-}
-
-.hero h1 {
-  font-size: clamp(1.8rem, 5vw, 3rem);
+/* ===== TITRE DE PAGE ===== */
+.page-titre {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: var(--rose);
   font-weight: normal;
-  margin-bottom: 1rem;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  margin-bottom: 0.5rem;
 }
 
-.hero p {
-  font-size: 1.15rem;
-  max-width: 600px;
-  margin: 0 auto 2rem;
-  opacity: 0.95;
+/* ===== BANNIÈRE ACCUEIL ===== */
+.accueil-banner {
+  text-align: center;
+  padding: 3rem 1rem 1rem;
+  max-width: 680px;
+  margin: 0 auto 2.5rem;
+}
+.accueil-banner h1 {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  color: var(--rose);
+  font-weight: normal;
+  line-height: 1.35;
+  margin-bottom: 1rem;
+}
+.accueil-banner p {
+  color: var(--texte-clair);
+  font-size: 1.05rem;
+  margin-bottom: 1.75rem;
 }
 
 .btn {
@@ -182,6 +212,14 @@ section h2 {
   width: 100%;
   border-radius: 1rem;
   box-shadow: 0 8px 32px var(--ombre);
+}
+
+/* ===== CONTACT GRILLE ===== */
+.contact-grille {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
 }
 
 /* ===== SERVICES ===== */
@@ -303,11 +341,34 @@ footer a:hover { text-decoration: underline; }
 
   nav.ouverte { display: flex; }
 
-  header { position: relative; }
+  /* Masquer le texte du logo sur mobile pour gagner de la place */
+  .logo-texte { display: none; }
 
-  .presentation {
-    grid-template-columns: 1fr;
+  /* Texte sombre dans le dropdown blanc */
+  nav.ouverte a { color: var(--texte-clair); }
+  nav.ouverte a:hover,
+  nav.ouverte a.active {
+    background: var(--gradient);
+    color: var(--blanc);
   }
 
-  .presentation img { max-width: 280px; justify-self: center; }
+  header { position: relative; }
+
+  /* Réduction padding sections */
+  section { padding: 2.5rem 1.25rem; }
+
+  .hero { padding: 3rem 1.25rem !important; }
+
+  /* Présentation : colonne unique */
+  .presentation { grid-template-columns: 1fr; }
+  .presentation img { max-width: 220px; justify-self: center; }
+
+  /* Contact : colonne unique */
+  .contact-grille { grid-template-columns: 1fr; gap: 2rem; }
+
+  /* Services : 1 colonne sur très petit écran */
+  .grille-services { grid-template-columns: 1fr; }
+
+  /* Boutons pleine largeur dans les sections CTA */
+  .rdv-encart .btn { display: block; text-align: center; }
 }
